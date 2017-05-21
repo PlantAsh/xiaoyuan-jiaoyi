@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xiaoyuan_jiaoyi.dao.TradingInformationDAO" >
+  <resultMap id="BaseResultMap" type="xiaoyuan_jiaoyi.entity.TradingInformation" >
+    <id column="trading_id" property="tradingId" jdbcType="INTEGER" />
+    <result column="article_id" property="articleId" jdbcType="INTEGER" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="trading_account" property="tradingAccount" jdbcType="VARCHAR" />
+    <result column="trading_price" property="tradingPrice" jdbcType="VARCHAR" />
+    <result column="trading_date" property="tradingDate" jdbcType="VARCHAR" />
+    <result column="trading_state" property="tradingState" jdbcType="VARCHAR" />
+    <result column="buy_estimate" property="buyEstimate" jdbcType="VARCHAR" />
+    <result column="sell_estimate" property="sellEstimate" jdbcType="VARCHAR" />
+    <result column="articleName" property="articleName" jdbcType="VARCHAR" />
+    <result column="floor" property="articleFloor" jdbcType="VARCHAR" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="tradingName" property="tradingName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    trading_id, article_id, user_account, trading_account, trading_price, trading_date, 
+    trading_state, buy_estimate, sell_estimate
+  </sql>
+  <select id="getState" resultMap="BaseResultMap" >
+    select trading_state
+    from trading_information
+    where article_id = #{0} and trading_account = #{1}
+  </select>
+  <select id="trading_ifm" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select t.*, a.article_name articleName, a.article_floor floor, a.user_name userName, u.user_name tradingName
+	from trading_information t, article a, user_information u
+	where (t.trading_account = #{userAccount,jdbcType=VARCHAR} or t.user_account = #{userAccount,jdbcType=VARCHAR})
+	and a.article_id = t.article_id and t.trading_account = u.user_account
+	order by t.trading_date DESC
+  </select>
+  <select id="get_allEstimate" resultMap="BaseResultMap" >
+    select t.*, a.article_name articleName, u1.user_name userName, u2.user_name tradingName
+	from trading_information t, user_information u1, user_information u2, article a
+	where t.trading_state = '交易完成' and t.user_account = u1.user_account and t.trading_account = u2.user_account
+	and a.article_id = t.article_id
+	and ((t.user_account = #{0} and t.buy_estimate != '') or (t.trading_account = #{0} and t.sell_estimate != ''))
+	order by t.trading_date DESC
+  </select>
+  <select id="getEstimate" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+	from trading_information
+	where trading_id = #{tradingId,jdbcType=INTEGER}
+  </select>
+  <insert id="addTrading" parameterType="xiaoyuan_jiaoyi.entity.TradingInformation" >
+    insert into trading_information
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tradingId != null" >
+        trading_id,
+      </if>
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="userAccount != null" >
+        user_account,
+      </if>
+      <if test="tradingAccount != null" >
+        trading_account,
+      </if>
+      <if test="tradingPrice != null" >
+        trading_price,
+      </if>
+      <if test="tradingDate != null" >
+        trading_date,
+      </if>
+      <if test="tradingState != null" >
+        trading_state,
+      </if>
+      <if test="buyEstimate != null" >
+        buy_estimate,
+      </if>
+      <if test="sellEstimate != null" >
+        sell_estimate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tradingId != null" >
+        #{tradingId,jdbcType=INTEGER},
+      </if>
+      <if test="articleId != null" >
+        #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="userAccount != null" >
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="tradingAccount != null" >
+        #{tradingAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="tradingPrice != null" >
+        #{tradingPrice,jdbcType=VARCHAR},
+      </if>
+      <if test="tradingDate != null" >
+        #{tradingDate,jdbcType=VARCHAR},
+      </if>
+      <if test="tradingState != null" >
+        #{tradingState,jdbcType=VARCHAR},
+      </if>
+      <if test="buyEstimate != null" >
+        #{buyEstimate,jdbcType=VARCHAR},
+      </if>
+      <if test="sellEstimate != null" >
+        #{sellEstimate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateTrading_ifm" parameterType="xiaoyuan_jiaoyi.entity.TradingInformation" >
+    update trading_information
+    <set >
+      <if test="tradingState != null" >
+        trading_state = #{tradingState,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where trading_id = #{tradingId,jdbcType=INTEGER}
+  </update>
+  <update id="updateTrading_other" parameterType="xiaoyuan_jiaoyi.entity.TradingInformation" >
+    update trading_information
+    <set >
+      <if test="tradingState != null" >
+        trading_state = '卖方取消',
+      </if>
+    </set>
+    where trading_id != #{tradingId,jdbcType=INTEGER} and article_id = #{articleId,jdbcType=INTEGER} and trading_state = '待同意'
+  </update>
+  <update id="update_Estimate" parameterType="xiaoyuan_jiaoyi.entity.TradingInformation" >
+    update trading_information
+    <set >
+      <if test="buyEstimate != null" >
+        buy_estimate = #{buyEstimate,jdbcType=VARCHAR},
+      </if>
+      <if test="sellEstimate != null" >
+        sell_estimate = #{sellEstimate,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where trading_id = #{tradingId,jdbcType=INTEGER}
+  </update>
+</mapper>

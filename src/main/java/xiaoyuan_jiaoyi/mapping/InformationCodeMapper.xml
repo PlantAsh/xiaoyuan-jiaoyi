@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xiaoyuan_jiaoyi.dao.InformationCodeDAO" >
+  <resultMap id="BaseResultMap" type="xiaoyuan_jiaoyi.entity.InformationCode" >
+    <id column="code_id" property="codeId" jdbcType="INTEGER" />
+    <result column="code_number" property="codeNumber" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+    <result column="code_type" property="codeType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    code_id, code_number, code_name, code_type
+  </sql>
+  <select id="loadByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from information_code
+    where code_type = #{codeType,jdbcType=INTEGER}
+  </select>
+</mapper>

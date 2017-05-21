@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xiaoyuan_jiaoyi.dao.MessageDAO" >
+  <resultMap id="BaseResultMap" type="xiaoyuan_jiaoyi.entity.Message" >
+    <id column="message_id" property="messageId" jdbcType="INTEGER" />
+    <result column="message_send" property="messageSend" jdbcType="VARCHAR" />
+    <result column="message_accept" property="messageAccept" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="message_date" property="messageDate" jdbcType="VARCHAR" />
+    <result column="message_state" property="messageState" jdbcType="VARCHAR" />
+    <result column="name1" property="sendName" jdbcType="VARCHAR" />
+    <result column="name2" property="acceptName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    message_id, message_send, message_accept, message, message_date, message_state
+  </sql>
+  <sql id="Message" >
+    m.message_id, m.message_send, m.message_accept, m.message, m.message_date, m.message_state, user1.user_name name1, user2.user_name name2
+  </sql>
+  <select id="getMessage" resultMap="BaseResultMap">
+  	select
+  	<include refid="Message" />
+  	from user_information user1, user_information user2, message m
+  	where (m.message_send = #{0} and m.message_accept = #{1} and user1.user_account = #{0} and user2.user_account = #{1}) 
+  	or (m.message_send = #{1} and m.message_accept = #{0} and user1.user_account = #{1} and user2.user_account = #{0})
+  	order by message_date
+  </select>
+  <select id="getUser" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	select user1.user_name name1,user1.user_account message_send
+  	from user_information user1
+  	where user1.user_account in (
+  	select m.message_send from (select * from message ORDER BY message_date DESC) m where m.message_accept = #{messageAccept,jdbcType=VARCHAR}
+  	GROUP BY m.message_send DESC)
+  	GROUP BY user1.user_account DESC
+  	UNION
+  	select user2.user_name name1,user2.user_account message_send
+  	from user_information user2
+  	where user2.user_account in (
+  	select m.message_accept from (select * from message ORDER BY message_date DESC) m where m.message_send = #{messageAccept,jdbcType=VARCHAR}
+  	GROUP BY m.message_accept DESC)
+  	GROUP BY user2.user_account DESC;
+  </select>
+  <select id="getCount" resultType="int">
+  	select count(*) from message WHERE message_accept = #{0} and message_state = #{1}
+  </select>
+  <insert id="addMessage" parameterType="xiaoyuan_jiaoyi.entity.Message" >
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        message_id,
+      </if>
+      <if test="messageSend != null" >
+        message_send,
+      </if>
+      <if test="messageAccept != null" >
+        message_accept,
+      </if>
+      <if test="message != null" >
+        message,
+      </if>
+      <if test="messageDate != null" >
+        message_date,
+      </if>
+      <if test="messageState != null" >
+        message_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="messageId != null" >
+        #{messageId,jdbcType=INTEGER},
+      </if>
+      <if test="messageSend != null" >
+        #{messageSend,jdbcType=VARCHAR},
+      </if>
+      <if test="messageAccept != null" >
+        #{messageAccept,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="messageDate != null" >
+        #{messageDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="messageState != null" >
+        #{messageState,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateState" >
+    update message
+    <set >
+        message_state = '已读'
+    </set>
+    where ((message_send = #{0} and message_accept = #{1}))
+  	and message_state = '未读'
+  </update>
+</mapper>

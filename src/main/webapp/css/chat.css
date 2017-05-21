@@ -1,0 +1,161 @@
+@CHARSET "UTF-8";
+
+.ChatBox {
+	position: absolute;
+	left: 750px;
+	top: 120px;
+	background: #eee;
+	width: 450px;
+	height: 600px;
+	display: none;
+	/* margin: 80px auto 0; */
+	box-shadow: 20px 20px 55px #777;
+}
+
+.left {
+	width: 200px;
+	height: 600px;
+	background: #DBDBDB;
+	position: absolute;
+	right: 450px;
+	padding: 10px;
+}
+
+.leftContent {
+	width: 170px;
+	height: 570px;
+	overflow: auto;
+	padding: 5px;
+	position: absolute;
+	right: 10px;
+}
+
+.user {
+	height: 40px;
+	width: 150px;
+	background: #eee;
+	font-size: 20px;
+	padding: 5px;
+}
+
+.userNow {
+	height: 40px;
+	width: 150px;
+	background: #eee;
+	color: #000;
+	font-size: 20px;
+	padding: 5px;
+}
+
+.row1 {
+	background: #666;
+	height: 40px;
+	color: #fff;
+	line-height: 34px;
+	font-size: 20px;
+	padding: 0 10px;
+}
+
+.close_btn {
+	font-family: arial;
+	font-size: 30px;
+	font-weight: 700;
+	color: #999;
+	text-decoration: none;
+	float: right;
+	padding-right: 4px;
+}
+
+.footer {
+	width: 450px;
+	height: 70px;
+	background: #666;
+	position: absolute;
+	bottom: 0;
+	padding: 10px;
+}
+
+.footer_input {
+	width: 340px;
+	height: 45px;
+	outline: none;
+	font-size: 20px;
+	text-indent: 10px;
+	position: absolute;
+	border-radius: 6px;
+	right: 90px;
+}
+
+.footer_span {
+	display: inline-block;
+	width: 62px;
+	height: 48px;
+	background: #ccc;
+	font-weight: 900;
+	line-height: 45px;
+	cursor: pointer;
+	text-align: center;
+	position: absolute;
+	right: 20px;
+	border-radius: 6px;
+}
+
+.footer_span:hover {
+	color: #fff;
+	background: #999;
+}
+
+.chat_img {
+	width: 60px;
+	height: 60px;
+}
+
+.content {
+	font-size: 20px;
+	width: 435px;
+	height: 460px;
+	overflow: auto;
+	padding: 5px;
+}
+
+.content_li {
+	margin-top: 10px;
+	padding-left: 10px;
+	width: 412px;
+	display: block;
+	clear: both;
+	overflow: hidden;
+}
+
+.content_li_img {
+	float: left;
+}
+
+.content_li_span {
+	background: #7cfc00;
+	padding: 10px;
+	border-radius: 10px;
+	float: left;
+	margin: 6px 10px 0 10px;
+	max-width: 310px;
+	border: 1px solid #ccc;
+	box-shadow: 0 0 3px #ccc;
+}
+
+.content_li_imgleft {
+	float: left;
+}
+
+.content_li_imgright {
+	float: right;
+}
+
+.content_li_spanleft {
+	float: left;
+	background: #fff;
+}
+
+.content_li_spanright {
+	float: right;
+	background: #7cfc00;
+}

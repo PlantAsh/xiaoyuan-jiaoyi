@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xiaoyuan_jiaoyi.dao.UserCodeDAO" >
+  <resultMap id="BaseResultMap" type="xiaoyuan_jiaoyi.entity.UserCode" >
+    <id column="code_id" property="codeId" jdbcType="INTEGER" />
+    <result column="code_level" property="codeLevel" jdbcType="VARCHAR" />
+    <result column="code_name" property="codeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    code_id, code_level, code_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_code
+    where code_id = #{codeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_code
+    where code_id = #{codeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="xiaoyuan_jiaoyi.entity.UserCode" >
+    insert into user_code (code_id, code_level, code_name
+      )
+    values (#{codeId,jdbcType=INTEGER}, #{codeLevel,jdbcType=VARCHAR}, #{codeName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="xiaoyuan_jiaoyi.entity.UserCode" >
+    insert into user_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codeId != null" >
+        code_id,
+      </if>
+      <if test="codeLevel != null" >
+        code_level,
+      </if>
+      <if test="codeName != null" >
+        code_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codeId != null" >
+        #{codeId,jdbcType=INTEGER},
+      </if>
+      <if test="codeLevel != null" >
+        #{codeLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="xiaoyuan_jiaoyi.entity.UserCode" >
+    update user_code
+    <set >
+      <if test="codeLevel != null" >
+        code_level = #{codeLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null" >
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where code_id = #{codeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xiaoyuan_jiaoyi.entity.UserCode" >
+    update user_code
+    set code_level = #{codeLevel,jdbcType=VARCHAR},
+      code_name = #{codeName,jdbcType=VARCHAR}
+    where code_id = #{codeId,jdbcType=INTEGER}
+  </update>
+</mapper>

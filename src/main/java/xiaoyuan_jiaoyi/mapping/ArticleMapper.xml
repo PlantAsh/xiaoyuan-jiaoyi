@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xiaoyuan_jiaoyi.dao.ArticleDAO" >
+  <resultMap id="BaseResultMap" type="xiaoyuan_jiaoyi.entity.Article" >
+    <id column="article_id" property="articleId" jdbcType="INTEGER" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="article_name" property="articleName" jdbcType="VARCHAR" />
+    <result column="article_price" property="articlePrice" jdbcType="VARCHAR" />
+    <result column="article_describe" property="articleDescribe" jdbcType="VARCHAR" />
+    <result column="article_picture" property="articlePicture" jdbcType="VARCHAR" />
+    <result column="article_state" property="articleState" jdbcType="VARCHAR" />
+    <result column="article_floor" property="articleFloor" jdbcType="VARCHAR" />
+    <result column="article_date" property="articleDate" jdbcType="TIMESTAMP" />
+    <result column="article_modify" property="articleModify" jdbcType="VARCHAR" />
+    <result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="delete_state" property="deleteState" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    article_id, user_account, user_name, article_name, article_price, article_describe, article_picture, 
+    article_state, article_floor, article_date, article_modify, modify_date, delete_state
+  </sql>
+  <select id="loadArticle" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from article
+    where article_floor = #{0} and article_state = '未交易' and delete_state = '否'
+    order by article_date desc
+    limit #{1},#{2}
+  </select>
+  <select id="getArticle" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  	select
+  	<include refid="Base_Column_List" />
+  	from article
+  	where article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+  <select id="getPage" resultType="int" parameterType="java.lang.String" >
+    select
+    count(*)
+    from article
+    where article_floor = #{articleFloor,jdbcType=VARCHAR} and article_state = '未交易'
+  </select>
+  <insert id="addArticle" parameterType="xiaoyuan_jiaoyi.entity.Article" >
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userAccount != null" >
+        user_account,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="articleName != null" >
+        article_name,
+      </if>
+      <if test="articlePrice != null" >
+        article_price,
+      </if>
+      <if test="articleDescribe != null" >
+        article_describe,
+      </if>
+      <if test="articlePicture != null" >
+        article_picture,
+      </if>
+      <if test="articleState != null" >
+        article_state,
+      </if>
+      <if test="articleFloor != null" >
+        article_floor,
+      </if>
+      <if test="articleDate != null" >
+        article_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userAccount != null" >
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleName != null" >
+        #{articleName,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePrice != null" >
+        #{articlePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="articleDescribe != null" >
+        #{articleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePicture != null" >
+        #{articlePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="articleState != null" >
+        #{articleState,jdbcType=VARCHAR},
+      </if>
+      <if test="articleFloor != null" >
+        #{articleFloor,jdbcType=VARCHAR},
+      </if>
+      <if test="articleDate != null" >
+        #{articleDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateUserName" parameterType="xiaoyuan_jiaoyi.entity.Article" >
+    update article
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_account = #{userAccount,jdbcType=VARCHAR}
+  </update>
+  <update id="updateState">
+    update article
+    <set >
+        article_state = '已交易'
+    </set>
+    where article_id = #{0}
+  </update>
+  <update id="updateArticle" parameterType="xiaoyuan_jiaoyi.entity.Article" >
+    update article
+    <set >
+      <if test="articleName != null" >
+        article_name = #{articleName,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePrice != null" >
+        article_price = #{articlePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="articleDescribe != null" >
+        article_describe = #{articleDescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="articlePicture != null" >
+        article_picture = #{articlePicture,jdbcType=VARCHAR},
+      </if>
+      <if test="articleFloor != null" >
+        article_floor = #{articleFloor,jdbcType=VARCHAR},
+      </if>
+      <if test="articleFloor != null" >
+        article_modify = #{articleModify,jdbcType=VARCHAR},
+      </if>
+      <if test="articleFloor != null" >
+        modify_date = #{modifyDate,jdbcType=TIMESTAMP}
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=INTEGER} and article_state = '未交易'
+  </update>
+  <update id="deleteArticle">
+    update article
+    <set >
+        delete_state = '是', article_state = '交易结束'
+    </set>
+    where article_id = #{0}
+  </update>
+</mapper>
